@@ -6,7 +6,8 @@ const mongoose = require('mongoose');
 const methodOverride = require('method-override'); // import method override to allow put and other requests from body
 const morgan = require('morgan'); // import logging middleware
 const ejsMate = require('ejs-mate'); //import ejs engine allowing for layouts rather than partials
-const { AppError, wrapAsync } = require('./Utilities'); // import custom error class
+const wrapAsync = require('./utilities/wrapAsync');
+const validateCampground = require('./models/validationSchemas');
 
 // mongoose connection
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
@@ -57,6 +58,7 @@ app.get(
 // NEW POST
 app.post(
     '/campgrounds',
+    validateCampground,
     wrapAsync(async(req, res, next) => {
         const campground = new Campground(req.body.campground);
         await campground.save();
@@ -85,6 +87,7 @@ app.get(
 // UPDATE PUT
 app.put(
     '/campgrounds/:id',
+    validateCampground,
     wrapAsync(async(req, res, next) => {
         const campground = await Campground.findByIdAndUpdate(req.params.id, {...req.body.campground });
         res.redirect(`/campgrounds/${campground._id}`);
@@ -101,11 +104,16 @@ app.delete(
     })
 );
 
+// 404 ERROR
+app.all('*', (req, res, next) => {
+    next(new AppError('Page Not Found', 404));
+});
+
 // ERROR HANDLER
 app.use((err, req, res, next) => {
-    const { status = 500, message = 'something went wrong' } = err;
-    res.status(status).send(message);
-    next();
+    const { status = 500 } = err;
+    if (!err.message) err.message = 'Something went wrong...';
+    res.status(status).render('error', { err });
 });
 
 app.listen(3000, () => {
