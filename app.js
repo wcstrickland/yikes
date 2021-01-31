@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const methodOverride = require('method-override'); // import method override to allow put and other requests from body
 const morgan = require('morgan') // import logging middleware
 const ejsMate = require('ejs-mate') //import ejs engine allowing for layouts rather than partials
+const AppError = require('./AppError') // import custom error class
 
 // mongoose connection
 mongoose.connect('mongodb://localhost:27017/yelp-camp', { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true })
@@ -29,58 +30,88 @@ app.use(morgan('tiny'));
 // ROUTES
 
 // HOME
-app.get('/', (req, res) => {
+app.get('/', (req, res, next) => {
     res.render('home')
 });
 
 // INDEX
-app.get('/campgrounds', async(req, res) => {
-    const campgrounds = await Campground.find({});
-    res.render('campgrounds/index', { campgrounds });
+app.get('/campgrounds', async(req, res, next) => {
+    try {
+        const campgrounds = await Campground.find({});
+        res.render('campgrounds/index', { campgrounds });
+    } catch (error) {
+        next(new AppError('Not found', 404))
+    }
 });
 
 // NEW FORM
-app.get('/campgrounds/new', (req, res) => {
-    res.render('campgrounds/new');
+app.get('/campgrounds/new', (req, res, next) => {
+    try {
+        res.render('campgrounds/new');
+    } catch (error) {
+        next(new AppError('Not found', 404))
+    }
 })
 
 // NEW POST
-app.post('/campgrounds', async(req, res) => {
-    const campground = new Campground(req.body.campground);
-    await campground.save();
-    res.redirect(`/campgrounds/${campground._id}`);
+app.post('/campgrounds', async(req, res, next) => {
+    try {
+        const campground = new Campground(req.body.campground);
+        await campground.save();
+        res.redirect(`/campgrounds/${campground._id}`);
+    } catch (error) {
+        next(new AppError('Not found', 404))
+    }
 })
 
 // SHOW
-app.get('/campgrounds/:id', async(req, res) => {
-    const campground = await Campground.findById(req.params.id);
-    res.render('campgrounds/show', { campground })
+app.get('/campgrounds/:id', async(req, res, next) => {
+    try {
+        const campground = await Campground.findById(req.params.id);
+        res.render('campgrounds/show', { campground })
+    } catch (error) {
+        next(new AppError('Not found', 404))
+    }
 })
 
 // UPDATE FORM
-app.get('/campgrounds/:id/edit', async(req, res) => {
-    const campground = await Campground.findById(req.params.id);
-    res.render('campgrounds/edit', { campground })
+app.get('/campgrounds/:id/edit', async(req, res, next) => {
+    try {
+        const campground = await Campground.findById(req.params.id);
+        res.render('campgrounds/edit', { campground })
+    } catch (error) {
+        next(new AppError('Not found', 404))
+    }
 })
 
 // UPDATE PUT
-app.put('/campgrounds/:id', async(req, res) => {
-    const campground = await Campground.findByIdAndUpdate(req.params.id, {...req.body.campground })
-    res.redirect(`/campgrounds/${campground._id}`);
+app.put('/campgrounds/:id', async(req, res, next) => {
+    try {
+        const campground = await Campground.findByIdAndUpdate(req.params.id, {...req.body.campground })
+        res.redirect(`/campgrounds/${campground._id}`);
+    } catch (error) {
+        next(new AppError('Not found', 404))
+    }
 })
 
 // DELETE
-app.delete('/campgrounds/:id', async(req, res) => {
-    const { id } = req.params;
-    await Campground.findByIdAndDelete(id)
-    res.redirect('/campgrounds')
+app.delete('/campgrounds/:id', async(req, res, next) => {
+    try {
+        const { id } = req.params;
+        await Campground.findByIdAndDelete(id)
+        res.redirect('/campgrounds')
+    } catch (error) {
+        next(new AppError('Not found', 404))
+    }
 })
 
-// // 404 
-// app.use((req, res) => {
-//     res.render('404', { req })
-// })
-
+// ERROR HANDLER
+app.use((err, req, res, next) => {
+    const { status = 500, message = "something went wrong" } = err;
+    res.status(status).send(message);
+    console.log(err)
+    next()
+})
 
 app.listen(3000, () => {
     console.log('Serving on port 3000')
