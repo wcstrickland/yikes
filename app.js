@@ -105,7 +105,6 @@ app.delete(
 app.use((err, req, res, next) => {
     const { status = 500, message = 'something went wrong' } = err;
     res.status(status).send(message);
-    console.log(err);
     next();
 });
 
