@@ -1,6 +1,13 @@
-const { required } = require('joi');
+/**
+ * middle ware for validating that incoming information meets requirements on the server side
+ * client side validation is currently located in boilerplate
+ * NOT DEPENDANT ON MONGOOSE SCHEMA'S BUT STORED WITH THEM AS LOGICAL ASSOCIATION
+ * 
+ */
+
 const Joi = require('joi');
 const AppError = require('../utilities/AppError');
+
 const validateCampground = (req, res, next) => {
     const campgroundSchema = Joi.object({
         campground: Joi.object({

@@ -1,3 +1,9 @@
+/**
+ * connect to mongo using mongoose
+ * clear db
+ * seed the db with random data pulled from cities.js and seedHelpers.js
+ */
+
 const mongoose = require('mongoose');
 const cities = require('./cities');
 const { places, descriptors } = require('./seedHelpers');
@@ -11,14 +17,12 @@ mongoose.connect('mongodb://localhost:27017/yelp-camp', {
 
 const db = mongoose.connection;
 
-db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", () => {
-    console.log("Database connected");
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', () => {
+    console.log('Database connected');
 });
 
-
-const sample = array => array[Math.floor(Math.random() * array.length)];
-
+const sample = (array) => array[Math.floor(Math.random() * array.length)];
 
 const seedDB = async() => {
     await Campground.deleteMany({});
@@ -31,12 +35,11 @@ const seedDB = async() => {
             image: 'https://source.unsplash.com/collection/483251',
             description: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Odio iste dolorum temporibus ab tempora voluptas dolores cupiditate veniam voluptates ex nostrum quod, nam rem deleniti! Eaque alias vitae temporibus blanditiis.',
             price
-        })
+        });
         await camp.save();
     }
-}
+};
 
-seedDB()
-    .then(() => {
-        db.close();
-    });
+seedDB().then(() => {
+    db.close();
+});
