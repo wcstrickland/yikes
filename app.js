@@ -11,6 +11,7 @@ const path = require('path'); // import path module to get access to file paths
 const mongoose = require('mongoose');
 const AppError = require('./utilities/AppError');
 const campgroundRoutes = require('./routes/campgrounds');
+const reviewRoutes = require('./routes/reviews');
 app.set('views', path.join(__dirname, 'views')); // set view path
 app.set('view engine', 'ejs'); // set view engine
 app.engine('ejs', ejsMate); // add engine
@@ -21,6 +22,7 @@ app.use(morgan('tiny')); // logging mw: console.logs request, route, response ti
 app.use(cookieParser('secretCookieKey')); // cookie parsing allows access to cookie info on req object
 app.use(session({ secret: 'secretSessionKey', resave: false, saveUninitialized: false }));
 app.use(flash()); // adds a .flash() method onto all req objects
+app.use(express.static(path.join(__dirname, 'public'))); // serves static assets
 
 // MONGOOSE CONNECTION (uri:string, options:object)
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
@@ -41,6 +43,8 @@ db.once('open', () => {
 
 // CAMPGROUND ROUTES
 app.use('/campgrounds', campgroundRoutes);
+// REVIEW ROUTES
+app.use('/campgrounds/:id/reviews', reviewRoutes);
 
 // HOME
 app.get('/', (req, res, next) => {
