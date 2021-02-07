@@ -19,10 +19,26 @@ app.engine('ejs', ejsMate); // add engine
 app.use(express.urlencoded({ extended: true })); // middle ware that parses post requests payloads incoming via DOM body
 app.use(methodOverride('_method')); // middle ware that allows put request to be served via DOM body
 app.use(morgan('tiny')); // logging mw: console.logs request, route, response time
-app.use(cookieParser('secretCookieKey')); // cookie parsing allows access to cookie info on req object
-app.use(session({ secret: 'secretSessionKey', resave: false, saveUninitialized: false }));
 app.use(flash()); // adds a .flash() method onto all req objects
 app.use(express.static(path.join(__dirname, 'public'))); // serves static assets
+app.use(cookieParser('secretCookieKey')); // cookie parsing allows access to cookie info on req object
+app.use(
+    session({
+        secret: 'secretSessionKey', //TODO move to environment varibale along with cookie parser key
+        resave: false,
+        saveUninitialized: true,
+        cookie: {
+            expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // + ms -> sec -> min -> hr -> day -> week
+            maxAge: 1000 * 60 * 60 * 24 * 7, // expires after a week
+            httpOnly: true // helps prevent cross site scripting from obtaining cookie
+        }
+    })
+);
+app.use((req, res, next) => {
+    res.locals.success = req.flash('success'); // attatches flash messages to all responses
+    res.locals.error = req.flash('error');
+    next(); // so we dont have to manually pass it around
+});
 
 // MONGOOSE CONNECTION (uri:string, options:object)
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
