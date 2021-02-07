@@ -14,7 +14,8 @@ const AppError = require('./utilities/AppError');
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
     useNewUrlParser: true,
     useCreateIndex: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: false
 });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -140,6 +141,19 @@ app.post(
         res.redirect(`/campgrounds/${campground._id}`);
     })
 );
+
+// delete a review
+app.delete(
+    '/campgrounds/:id/reviews/:reviewId',
+    wrapAsync(async(req, res, next) => {
+        const { id, reviewId } = req.params;
+        await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+        await Review.findByIdAndDelete(reviewId);
+        res.redirect(`/campgrounds/${id}`);
+    })
+);
+
+// ERROR STUFF
 
 // 404 ERROR
 app.all('*', (req, res, next) => {

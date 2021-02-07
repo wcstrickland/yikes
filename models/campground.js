@@ -7,6 +7,7 @@
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Review = require('./review');
 
 const CampgroundSchema = new Schema({
     title: String,
@@ -18,6 +19,23 @@ const CampgroundSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Review'
     }]
+});
+
+/**
+ * mongoose middleware is broken up into document middle ware and quey middleware
+ * this is a quey middle ware. It will run POST(after) every instance of `findOneAndDelete`
+ * is called on CampgroundSchema. We will use this to create an on-delete cascade for the 
+ * reviews stored in [] on campground. Even though this operation happens after deletion
+ * the information about the deleted doc is passed to the call back function. we simply name it
+ * in this case `deletedDoc`
+ */
+
+CampgroundSchema.post('findOneAndDelete', async function(deletedDoc) {
+    if (deletedDoc) {
+        await Review.deleteMany({
+            _id: { $in: deletedDoc.reviews }
+        });
+    }
 });
 
 module.exports = mongoose.model('Campground', CampgroundSchema);
