@@ -11,22 +11,13 @@
 const express = require('express');
 const wrapAsync = require('../utilities/wrapAsync'); // try/catch wrapper for async functions calling next on errors
 const Campground = require('../models/campground'); // campground model import
-const Review = require('../models/review'); // review model import
-const { reviewSchema, campgroundSchema } = require('../models/validationSchemas'); // JOI validation schemas for server side validation
-const router = express.Router(); // create router object
+const { campgroundSchema } = require('../models/validationSchemas'); // JOI validation schemas for server side validation
+const AppError = require('../utilities/AppError');
+const router = express.Router({ mergeParams: true }); // create router object
 
 // VALIDATION MIDDLEWARE
 const validateCampground = (req, res, next) => {
     const { error } = campgroundSchema.validate(req.body);
-    if (error) {
-        const msg = error.details.map((el) => el.message).join(',');
-        throw new AppError(msg, 400);
-    } else {
-        next();
-    }
-};
-const validateReview = (req, res, next) => {
-    const { error } = reviewSchema.validate(req.body);
     if (error) {
         const msg = error.details.map((el) => el.message).join(',');
         throw new AppError(msg, 400);
@@ -98,31 +89,6 @@ router.delete(
         const { id } = req.params;
         await Campground.findByIdAndDelete(id);
         res.redirect('/campgrounds');
-    })
-);
-
-// SUBMIT NEW REVIEW
-router.post(
-    '/:id/reviews',
-    validateReview,
-    wrapAsync(async(req, res, next) => {
-        const campground = await Campground.findById(req.params.id);
-        const review = new Review(req.body.review);
-        campground.reviews.push(review);
-        await review.save();
-        await campground.save();
-        res.redirect(`/campgrounds/${campground._id}`);
-    })
-);
-
-// DELETE REVIEW
-router.delete(
-    '/:id/reviews/:reviewId',
-    wrapAsync(async(req, res, next) => {
-        const { id, reviewId } = req.params;
-        await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
-        await Review.findByIdAndDelete(reviewId);
-        res.redirect(`/campgrounds/${id}`);
     })
 );
 
