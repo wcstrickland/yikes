@@ -1,9 +1,19 @@
+/**
+ * this express router allows us to move routes and
+ * their direct dependencies out of the main `app` file
+ * in the app file it appears app.use('/campgrounds', campgroundRoutes);
+ * the first argument is the string representation.
+ * if any incoming requests match the string it will pass to this file
+ * essentially the string is a prefix for all router.verb routes below
+ * the second argument is the name given to the import of this file
+ */
+
 const express = require('express');
-const wrapAsync = require('../utilities/wrapAsync');
-const Campground = require('../models/campground');
-const Review = require('../models/review');
-const { reviewSchema, campgroundSchema } = require('../models/validationSchemas');
-const router = express.Router();
+const wrapAsync = require('../utilities/wrapAsync'); // try/catch wrapper for async functions calling next on errors
+const Campground = require('../models/campground'); // campground model import
+const Review = require('../models/review'); // review model import
+const { reviewSchema, campgroundSchema } = require('../models/validationSchemas'); // JOI validation schemas for server side validation
+const router = express.Router(); // create router object
 
 // VALIDATION MIDDLEWARE
 const validateCampground = (req, res, next) => {
@@ -34,7 +44,7 @@ router.get(
     })
 );
 
-// NEW FORM
+// NEW CAMPGROUND FORM
 router.get(
     '/new',
     wrapAsync((req, res, next) => {
@@ -42,7 +52,7 @@ router.get(
     })
 );
 
-// NEW POST
+// NEW CAMPGROUND POST
 router.post(
     '/',
     validateCampground,
@@ -53,7 +63,7 @@ router.post(
     })
 );
 
-// SHOW
+// SHOW CAMPGROUND
 router.get(
     '/:id',
     wrapAsync(async(req, res, next) => {
@@ -62,7 +72,7 @@ router.get(
     })
 );
 
-// UPDATE FORM
+// UPDATE CAMPGROUND FORM
 router.get(
     '/:id/edit',
     wrapAsync(async(req, res, next) => {
@@ -71,7 +81,7 @@ router.get(
     })
 );
 
-// UPDATE PUT
+// UPDATE CAMPGROUNDPUT
 router.put(
     '/:id',
     validateCampground,
@@ -81,7 +91,7 @@ router.put(
     })
 );
 
-// DELETE
+// DELETE CAMPGROUND
 router.delete(
     '/:id',
     wrapAsync(async(req, res, next) => {
@@ -105,7 +115,7 @@ router.post(
     })
 );
 
-// delete a review
+// DELETE REVIEW
 router.delete(
     '/:id/reviews/:reviewId',
     wrapAsync(async(req, res, next) => {
