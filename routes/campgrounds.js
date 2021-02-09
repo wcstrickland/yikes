@@ -74,6 +74,7 @@ router.get(
 // UPDATE CAMPGROUND FORM
 router.get(
     '/:id/edit',
+    isLoggedIn,
     wrapAsync(async(req, res, next) => {
         const campground = await Campground.findById(req.params.id);
         if (!campground) {
@@ -87,6 +88,7 @@ router.get(
 // UPDATE CAMPGROUNDPUT
 router.put(
     '/:id',
+    isLoggedIn,
     validateCampground,
     wrapAsync(async(req, res, next) => {
         const campground = await Campground.findByIdAndUpdate(req.params.id, {...req.body.campground });
@@ -98,6 +100,7 @@ router.put(
 // DELETE CAMPGROUND
 router.delete(
     '/:id',
+    isLoggedIn,
     wrapAsync(async(req, res, next) => {
         const { id } = req.params;
         await Campground.findByIdAndDelete(id);

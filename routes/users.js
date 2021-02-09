@@ -26,12 +26,20 @@ router.post(
     })
 );
 
+// SERVES LOGIN FORM
 router.get('/login', (req, res) => {
     res.render('users/login');
 });
 
+// POSTS LOGIN FORM DATA
 router.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), (req, res) => {
     req.flash('success', 'Welcome back!');
+    res.redirect('/campgrounds');
+});
+
+router.get('/logout', (req, res) => {
+    req.logOut();
+    req.flash('success', 'Goodbye!');
     res.redirect('/campgrounds');
 });
 

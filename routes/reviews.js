@@ -4,6 +4,7 @@ const Campground = require('../models/campground'); // campground model import
 const Review = require('../models/review'); // review model import
 const { reviewSchema } = require('../models/validationSchemas'); // JOI validation schemas for server side validation
 const AppError = require('../utilities/AppError');
+const { isLoggedIn } = require('../middleware');
 const router = express.Router({ mergeParams: true }); // create router object
 
 // VALIDATION MIDDLEWARE
@@ -21,6 +22,7 @@ const validateReview = (req, res, next) => {
 router.post(
     '/',
     validateReview,
+    isLoggedIn,
     wrapAsync(async(req, res, next) => {
         const campground = await Campground.findById(req.params.id);
         const review = new Review(req.body.review);
@@ -35,6 +37,7 @@ router.post(
 // DELETE REVIEW
 router.delete(
     '/:reviewId',
+    isLoggedIn,
     wrapAsync(async(req, res, next) => {
         const { id, reviewId } = req.params;
         await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
