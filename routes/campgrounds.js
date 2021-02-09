@@ -13,6 +13,7 @@ const wrapAsync = require('../utilities/wrapAsync'); // try/catch wrapper for as
 const Campground = require('../models/campground'); // campground model import
 const { campgroundSchema } = require('../models/validationSchemas'); // JOI validation schemas for server side validation
 const AppError = require('../utilities/AppError');
+const { isLoggedIn } = require('../middleware');
 const router = express.Router({ mergeParams: true }); // create router object
 
 // VALIDATION MIDDLEWARE
@@ -38,6 +39,7 @@ router.get(
 // NEW CAMPGROUND FORM
 router.get(
     '/new',
+    isLoggedIn,
     wrapAsync((req, res, next) => {
         res.render('campgrounds/new');
     })
@@ -46,6 +48,7 @@ router.get(
 // NEW CAMPGROUND POST
 router.post(
     '/',
+    isLoggedIn,
     validateCampground,
     wrapAsync(async(req, res, next) => {
         const campground = new Campground(req.body.campground);
