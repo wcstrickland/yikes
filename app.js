@@ -6,12 +6,16 @@ const ejsMate = require('ejs-mate'); //import ejs engine allowing for layouts ra
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('connect-flash');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
 const app = express(); // running app
 const path = require('path'); // import path module to get access to file paths
 const mongoose = require('mongoose');
 const AppError = require('./utilities/AppError');
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
+const userRoutes = require('./routes/users');
+const User = require('./models/user');
 app.set('views', path.join(__dirname, 'views')); // set view path
 app.set('view engine', 'ejs'); // set view engine
 app.engine('ejs', ejsMate); // add engine
@@ -34,6 +38,13 @@ app.use(
         }
     })
 );
+// PASSPORT CONFIGURATION
+app.use(passport.initialize()); // initialize passport
+app.use(passport.session()); // this must be used after `session`
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser()); // method added by plugin on User model
+passport.deserializeUser(User.deserializeUser()); // method added by plugin
+// flash middleware
 app.use((req, res, next) => {
     res.locals.success = req.flash('success'); // attatches flash messages to all responses
     res.locals.error = req.flash('error');
@@ -57,6 +68,8 @@ db.once('open', () => {
 //ROUTES
 //
 
+// USER ROUTES
+app.use('/', userRoutes);
 // CAMPGROUND ROUTES
 app.use('/campgrounds', campgroundRoutes);
 // REVIEW ROUTES
