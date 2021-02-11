@@ -44,8 +44,9 @@ app.use(passport.session()); // this must be used after `session`
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser()); // method added by plugin on User model
 passport.deserializeUser(User.deserializeUser()); // method added by plugin
-// flash middleware
+// LOCALS/flash middleware
 app.use((req, res, next) => {
+    res.locals.currentUser = req.user;
     res.locals.success = req.flash('success'); // attatches flash messages to all responses
     res.locals.error = req.flash('error');
     next(); // so we dont have to manually pass it around
