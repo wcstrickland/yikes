@@ -32,11 +32,15 @@ router
     // SHOW CAMPGROUND
     .get(wrapAsync(campgrounds.showCampground))
     // UPDATE CAMPGROUND PUT
-    .put(isLoggedIn, isAuthor, validateCampground, wrapAsync(campgrounds.editCampground))
+    .put(isLoggedIn, isAuthor, upload.array('image'), validateCampground, wrapAsync(campgrounds.editCampground))
+    // APPEND PHOTOS
+    .patch(isLoggedIn, isAuthor, upload.array('image'), wrapAsync(campgrounds.appendPhotos))
     // DELETE CAMPGROUND
     .delete(isLoggedIn, isAuthor, wrapAsync(campgrounds.deleteCampground));
 
 // UPDATE CAMPGROUND FORM
 router.get('/:id/edit', isLoggedIn, isAuthor, wrapAsync(campgrounds.editForm));
+// APPEND PHOTOS FORM
+router.get('/:id/append', isLoggedIn, isAuthor, wrapAsync(campgrounds.appendForm));
 
 module.exports = router;

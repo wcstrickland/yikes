@@ -1,0 +1,21 @@
+<% layout('/layouts/boilerplate') %>
+    <div class="row">
+        <h1 class="text-center">Add Photos</h1>
+        <div class="col-6 offset-3 mb-5">
+            <form action="/campgrounds/<%= campground._id %>?_method=PATCH" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label class="form-label" for="title">Title</label>
+                    <input class="form-control" type="text" id="title" value="<%= campground.title %> " name="campground[title]" required disabled>
+                </div>
+                <div class="my-4 rounded" style="background-color: rgb(239, 247, 253);">
+                    <label class="pt-3 ms-5" for="img" class="form-label"><b>Upload New Photos</b></label>
+                    <p></p>
+                    <input class="pb-3 ms-5" type="file" name="image" id="img" multiple>
+                </div>
+                <div class="mb-3">
+                    <button class="btn btn-primary">Update Campground</button>
+                </div>
+            </form>
+            <a class="btn btn-secondary" href="/campgrounds">Cancel</a>
+        </div>
+    </div>

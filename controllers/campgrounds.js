@@ -43,9 +43,35 @@ module.exports.editForm = async(req, res, next) => {
     res.render('campgrounds/edit', { campground });
 };
 
+module.exports.appendForm = async(req, res, next) => {
+    const campground = await Campground.findById(req.params.id);
+    if (!campground) {
+        req.flash('error', 'Campground not found. 🙃');
+        return res.redirect('/campgrounds');
+    }
+    res.render('campgrounds/append', { campground });
+};
+
 module.exports.editCampground = async(req, res, next) => {
     const campground = await Campground.findByIdAndUpdate(req.params.id, {...req.body.campground });
+    campground.images = req.files.map((f) => ({ url: f.path, filename: f.filename }));
+    await campground.save();
     req.flash('success', 'Campground Updated 🎉');
+    res.redirect(`/campgrounds/${campground._id}`);
+};
+
+module.exports.appendPhotos = async(req, res, next) => {
+    const campground = await Campground.findById(req.params.id);
+    if (!campground) {
+        req.flash('error', 'Campground not found. 🙃');
+        return res.redirect('/campgrounds');
+    }
+    const newImages = req.files.map((f) => ({ url: f.path, filename: f.filename }));
+    for (let img of newImages) {
+        campground.images.push(img);
+    }
+    await campground.save();
+    req.flash('success', 'Successfully added photos');
     res.redirect(`/campgrounds/${campground._id}`);
 };
 
