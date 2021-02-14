@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
+
 // REQUIREMENTS AND INTITIALIZATION
 const express = require('express');
 const methodOverride = require('method-override'); // import method override to allow put and other requests from body
@@ -25,10 +29,10 @@ app.use(methodOverride('_method')); // middle ware that allows put request to be
 app.use(morgan('tiny')); // logging mw: console.logs request, route, response time
 app.use(flash()); // adds a .flash() method onto all req objects
 app.use(express.static(path.join(__dirname, 'public'))); // serves static assets
-app.use(cookieParser('secretCookieKey')); // cookie parsing allows access to cookie info on req object
+app.use(cookieParser(process.env.COOKIE_PARSER_KEY)); // cookie parsing allows access to cookie info on req object
 app.use(
     session({
-        secret: 'secretSessionKey', //TODO move to environment varibale along with cookie parser key
+        secret: process.env.SESSION_KEY,
         resave: false,
         saveUninitialized: true,
         cookie: {

@@ -13,13 +13,16 @@ const wrapAsync = require('../utilities/wrapAsync'); // try/catch wrapper for as
 const campgrounds = require('../controllers/campgrounds');
 const { isLoggedIn, isAuthor, validateCampground } = require('../middleware');
 const router = express.Router({ mergeParams: true }); // create router object
+const multer = require('multer');
+const { storage } = require('../cloudinary');
+const upload = multer({ storage });
 
 router
     .route('/')
     //INDEX
     .get(wrapAsync(campgrounds.index))
     // NEW POST
-    .post(isLoggedIn, validateCampground, wrapAsync(campgrounds.createCampground));
+    .post(isLoggedIn, upload.array('image'), validateCampground, wrapAsync(campgrounds.createCampground));
 
 // NEW CAMPGROUND FORM
 router.get('/new', isLoggedIn, campgrounds.newForm);
