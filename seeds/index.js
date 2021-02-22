@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const cities = require('./cities');
 const { places, descriptors } = require('./seedHelpers');
 const Campground = require('../models/campground');
+const Review = require('../models/review');
 
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
     useNewUrlParser: true,
@@ -26,6 +27,7 @@ const sample = (array) => array[Math.floor(Math.random() * array.length)];
 
 const seedDB = async() => {
     await Campground.deleteMany({});
+    await Review.deleteMany({});
     for (let i = 0; i < 20; i++) {
         const random1000 = Math.floor(Math.random() * 1000);
         const price = Math.floor(Math.random() * 20) + 10;
@@ -33,13 +35,17 @@ const seedDB = async() => {
             author: '6021ffe559b4264591643896',
             title: `${sample(descriptors)} ${sample(places)}`,
             location: `${cities[random1000].city}, ${cities[random1000].state}`,
+            geometry: {
+                type: 'Point',
+                coordinates: [-113.1331, 47.02]
+            },
             images: [{
-                    url: 'https://res.cloudinary.com/wcstrickland/image/upload/v1613329311/YelpCamp/spuhgxikpbpwgtovuo0k.jpg',
-                    filename: 'YelpCamp/spuhgxikpbpwgtovuo0k'
+                    url: 'https://res.cloudinary.com/wcstrickland/image/upload/v1613498117/YelpCamp/twdxpdki20obcchmtifm.jpg',
+                    filename: 'YelpCamp/twdxpdki20obcchmtifm'
                 },
                 {
-                    url: 'https://res.cloudinary.com/wcstrickland/image/upload/v1613328846/YelpCamp/pg7r7gzpfvelc6j1pf64.jpg',
-                    filename: 'YelpCamp/pg7r7gzpfvelc6j1pf64'
+                    url: 'https://res.cloudinary.com/wcstrickland/image/upload/v1613510053/YelpCamp/wzqwuxrlmswbciqi4sqa.jpg',
+                    filename: 'YelpCamp/wzqwuxrlmswbciqi4sqa'
                 }
             ],
             description: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Odio iste dolorum temporibus ab tempora voluptas dolores cupiditate veniam voluptates ex nostrum quod, nam rem deleniti! Eaque alias vitae temporibus blanditiis.',

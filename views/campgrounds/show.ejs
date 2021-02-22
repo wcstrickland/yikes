@@ -1,6 +1,8 @@
 <% layout('/layouts/boilerplate') %>
     <link rel="stylesheet" href="/stylesheets/stars.css">
 
+
+
     <div class="row mb-2">
         <% if(!campground.reviews.length&&!currentUser){ %>
             <div class="col-6 offset-3 ">
@@ -28,6 +30,7 @@
                             </button>
                                 <% } %>
                         </div>
+                        <div id='map' style='width: auto; height: 300px; margin-top: 1em;'></div>
                         <h5 class="card-title mt-3">
                             <%= campground.title %>
                         </h5>
@@ -92,6 +95,7 @@
                                 </button>
                                     <% } %>
                             </div>
+                            <div id='map' style='width: auto; height: 300px; margin-top: 1em;'></div>
                             <h5 class="card-title mt-3">
                                 <%= campground.title %>
                             </h5>
@@ -202,3 +206,8 @@
                         <% } %>
                             <% } %>
     </div>
+    <script>
+        const mapToken = '<%-process.env.MAPBOX_TOKEN%>';
+        const campground = <%-JSON.stringify(campground) %>;
+    </script>
+    <script src="/javascripts/showPageMap.js"></script>
