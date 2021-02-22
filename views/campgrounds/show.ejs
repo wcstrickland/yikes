@@ -95,7 +95,6 @@
                                 </button>
                                     <% } %>
                             </div>
-                            <div id='map' style='width: auto; height: 300px; margin-top: 1em;'></div>
                             <h5 class="card-title mt-3">
                                 <%= campground.title %>
                             </h5>
@@ -133,9 +132,7 @@
                                     <small> <a class="link-secondary" href="/campgrounds">back to all campgrounds</a></small>
                                 </div>
                     </div>
-                </div>
-                <% if(currentUser){ %>
-                    <div class="col-6 mb-3 d-flex flex-column justify-content-center">
+                    <% if(currentUser) {%>
                         <% if(campground.reviews.length !== 0) {%>
                             <h3>Leave a Review</h3>
                             <% } else { %>
@@ -161,29 +158,35 @@
                                         </div>
                                         <button class="btn btn-primary">Submit</button>
                                     </form>
-                                    <div class="overflow-auto border rounded mb-3" style="max-height: 50vh;">
-                                        <% for(let review of campground.reviews){ %>
-                                            <div class="card my-2">
-                                                <div class="card-body">
-                                                    <p class="starability-result" data-rating=<%=review.rating %>> Rated:
-                                                        <%= review.rating %>
-                                                    </p>
-                                                    <p class="card-text">
-                                                        <%= review.body %>
-                                                            <small class="card-subtitle mb-2 text-muted"> - <%= review.author.username %> </small>
-                                                    </p>
-                                                    <% if(currentUser.equals(review.author)){ %>
-                                                        <form action="/campgrounds/<%= campground._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
-                                                            <button class="btn btn-sm btn-danger">Delete</button>
-                                                        </form>
-                                                        <% } %>
-                                                </div>
-                                            </div>
+                                    <% } %>
+                </div>
+                <% if(currentUser){ %>
+                    <div class="col-6 mb-3 d-flex flex-column justify-content-center">
+                        <div id='map' style='width: auto; height: 300px; margin-top: 1em; margin-bottom: 1em;'></div>
+                        <div class="overflow-auto border rounded mb-3" style="max-height: 75vh;">
+                            <% for(let review of campground.reviews){ %>
+                                <div class="card my-2">
+                                    <div class="card-body">
+                                        <p class="starability-result" data-rating=<%=review.rating %>> Rated:
+                                            <%= review.rating %>
+                                        </p>
+                                        <p class="card-text">
+                                            <%= review.body %>
+                                                <small class="card-subtitle mb-2 text-muted"> - <%= review.author.username %> </small>
+                                        </p>
+                                        <% if(currentUser.equals(review.author)){ %>
+                                            <form action="/campgrounds/<%= campground._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+                                                <button class="btn btn-sm btn-danger">Delete</button>
+                                            </form>
                                             <% } %>
                                     </div>
+                                </div>
+                                <% } %>
+                        </div>
                     </div>
-                    <% } else{ %>
-                        <div class="overflow-auto border rounded col-6 mb-3" style="max-height: 90vh;">
+                    <% } else { %>
+                        <div class="overflow-auto border rounded col-6 mb-3" style="max-height: 80vh;">
+                            <div id='map' style='width: auto; height: 300px; margin-top: 1em; margin-bottom: 1em;'></div>
                             <% for(let review of campground.reviews){ %>
                                 <div class="card my-2">
                                     <div class="card-body">
