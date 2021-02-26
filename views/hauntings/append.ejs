@@ -1,0 +1,21 @@
+<% layout('/layouts/boilerplate') %>
+    <div class="row">
+        <h1 class="text-center">Add Photos</h1>
+        <div class="col-6 offset-3 mb-5">
+            <form action="/hauntings/<%= haunting._id %>?_method=PATCH" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label class="form-label" for="title">Title</label>
+                    <input class="form-control" type="text" id="title" value="<%= haunting.title %> " name="haunting[title]" required disabled>
+                </div>
+                <div class="my-4 rounded" style="background-color: rgb(239, 247, 253);">
+                    <label class="pt-2 ms-2" for="img" class="form-label"><b>Upload New Photos</b></label>
+                    <p></p>
+                    <div class="input-group pb-2 px-2">
+                        <input type="file" class="form-control" name="image" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload" multiple>
+                        <button type="submit" class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04">Add Photos</button>
+                    </div>
+                </div>
+            </form>
+            <a class="btn btn-secondary" href="/hauntings">Cancel</a>
+        </div>
+    </div>
