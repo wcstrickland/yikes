@@ -39,17 +39,19 @@
                         </p>
                     </div>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><b>
+                        <% if(haunting.price) {%>
+                            <li class="list-group-item"><b>
                             $
-                                <%= haunting.price %> /night
+                                <%= haunting.price %>
                             </b>
-                        </li>
-                        <li class="list-group-item">
-                            <b>
+                            </li>
+                            <% } %>
+                                <li class="list-group-item">
+                                    <b>
                                 Submitted by:
                             </b>
-                            <%= haunting.author.username %>
-                        </li>
+                                    <%= haunting.author.username %>
+                                </li>
                     </ul>
                     <% if(currentUser&& haunting.author.equals(currentUser)){ %>
                         <div class="card-body d-flex justify-content-around">
@@ -103,17 +105,19 @@
                             </p>
                         </div>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item"><b>
-                        $
-                            <%= haunting.price %> /night
-                        </b>
-                            </li>
-                            <li class="list-group-item">
-                                <b>
+                            <% if(haunting.price) {%>
+                                <li class="list-group-item"><b>
+                                $
+                                    <%= haunting.price %>
+                                </b>
+                                </li>
+                                <% } %>
+                                    <li class="list-group-item">
+                                        <b>
                             Submitted by:
                         </b>
-                                <%= haunting.author.username %>
-                            </li>
+                                        <%= haunting.author.username %>
+                                    </li>
                         </ul>
                         <% if(currentUser&& haunting.author.equals(currentUser)){ %>
                             <div class="card-body d-flex justify-content-around">
