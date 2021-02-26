@@ -10,6 +10,8 @@ const ejsMate = require('ejs-mate'); //import ejs engine allowing for layouts ra
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('connect-flash');
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const app = express(); // running app
@@ -45,6 +47,8 @@ app.use(
 // PASSPORT CONFIGURATION
 app.use(passport.initialize()); // initialize passport
 app.use(passport.session()); // this must be used after `session`
+app.use(mongoSanitize()); // sanitize db inputs against injection
+app.use(helmet({ contentSecurityPolicy: false })); // helmet security package
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser()); // method added by plugin on User model
 passport.deserializeUser(User.deserializeUser()); // method added by plugin
