@@ -2,18 +2,20 @@ if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 
-// REQUIREMENTS AND INTITIALIZATION
+// ************** REQUIREMENTS AND INTITIALIZATION *************
+
 const express = require('express');
 const methodOverride = require('method-override'); // import method override to allow put and other requests from body
 const morgan = require('morgan'); // import logging middleware
 const ejsMate = require('ejs-mate'); //import ejs engine allowing for layouts rather than partials
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
-const flash = require('connect-flash');
-const mongoSanitize = require('express-mongo-sanitize');
-const helmet = require('helmet');
-const passport = require('passport');
-const LocalStrategy = require('passport-local');
+const cookieParser = require('cookie-parser'); // allows express to properly parse cookies
+const session = require('express-session'); // express session tool
+const flash = require('connect-flash'); // flash middlewared
+const mongoSanitize = require('express-mongo-sanitize'); // sanitize db inputs
+const MongoStore = require('connect-mongo').default; // mongo session store
+const helmet = require('helmet'); // security mw package
+const passport = require('passport'); // auth
+const LocalStrategy = require('passport-local'); // auth
 const app = express(); // running app
 const path = require('path'); // import path module to get access to file paths
 const mongoose = require('mongoose');
@@ -25,15 +27,48 @@ const User = require('./models/user');
 app.set('views', path.join(__dirname, 'views')); // set view path
 app.set('view engine', 'ejs'); // set view engine
 app.engine('ejs', ejsMate); // add engine
-// MIDDLEWARES
+
+// ******************* MIDDLEWARES *********************
+
 app.use(express.urlencoded({ extended: true })); // middle ware that parses post requests payloads incoming via DOM body
 app.use(methodOverride('_method')); // middle ware that allows put request to be served via DOM body
 app.use(morgan('tiny')); // logging mw: console.logs request, route, response time
 app.use(flash()); // adds a .flash() method onto all req objects
 app.use(express.static(path.join(__dirname, 'public'))); // serves static assets
 app.use(cookieParser(process.env.COOKIE_PARSER_KEY)); // cookie parsing allows access to cookie info on req object
+
+// ********* MONGOOSE CONNECTION (uri:string, options:object) ***********
+
+const prodDbUrl = process.env.DB_URL; // prod db
+const devDbUrl = 'mongodb://localhost:27017/yikes'; // dev db
+mongoose.connect(devDbUrl, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false
+});
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', () => {
+    console.log('Database Connected');
+});
+
+// ******************* SESSION **************************
+
+// create a mongo session store variable to pass to session options later
+const store = MongoStore.create({
+    mongoUrl: devDbUrl,
+    secret: process.env.MONGO_SESSION_SECRET,
+    touchAfter: 24 * 60 * 60
+});
+
+store.on('error', function(e) {
+    console.log('session store error', e);
+});
+
 app.use(
     session({
+        store,
         secret: process.env.SESSION_KEY,
         resave: false,
         saveUninitialized: true,
@@ -44,7 +79,9 @@ app.use(
         }
     })
 );
-// PASSPORT CONFIGURATION
+
+//********** PASSPORT CONFIGURATION ****************
+
 app.use(passport.initialize()); // initialize passport
 app.use(passport.session()); // this must be used after `session`
 app.use(mongoSanitize()); // sanitize db inputs against injection
@@ -60,22 +97,7 @@ app.use((req, res, next) => {
     next(); // so we dont have to manually pass it around
 });
 
-// MONGOOSE CONNECTION (uri:string, options:object)
-mongoose.connect('mongodb://localhost:27017/yikes', {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false
-});
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', () => {
-    console.log('Database Connected');
-});
-
-//
-//ROUTES
-//
+//************ ROUTES *******************
 
 // USER ROUTES
 app.use('/', userRoutes);
