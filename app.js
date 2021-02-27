@@ -39,9 +39,9 @@ app.use(cookieParser(process.env.COOKIE_PARSER_KEY)); // cookie parsing allows a
 
 // ********* MONGOOSE CONNECTION (uri:string, options:object) ***********
 
-const prodDbUrl = process.env.DB_URL; // prod db
-const devDbUrl = 'mongodb://localhost:27017/yikes'; // dev db
-mongoose.connect(devDbUrl, {
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yikes';
+
+mongoose.connect(dbUrl, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
@@ -57,7 +57,7 @@ db.once('open', () => {
 
 // create a mongo session store variable to pass to session options later
 const store = MongoStore.create({
-    mongoUrl: devDbUrl,
+    mongoUrl: dbUrl,
     secret: process.env.MONGO_SESSION_SECRET,
     touchAfter: 24 * 60 * 60
 });
