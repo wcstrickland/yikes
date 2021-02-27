@@ -128,6 +128,6 @@ app.use((err, req, res, next) => {
 
 // LISTENER
 const port = process.env.PORT || 3000;
-app.listen(3000, () => {
+app.listen(port, () => {
     console.log(`SERVING ON PORT ${port}`);
 });
