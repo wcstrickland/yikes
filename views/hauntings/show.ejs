@@ -5,7 +5,7 @@
 
     <div class="row mb-2">
         <% if(!haunting.reviews.length&&!currentUser){ %>
-            <div class="col-6 offset-3 ">
+            <div class="col-8 offset-2 ">
                 <div class="card mb-3">
                     <div class="card-header">
                         <%= haunting.location %>
@@ -30,7 +30,7 @@
                             </button>
                                 <% } %>
                         </div>
-                        <div id='map' style='width: auto; height: 300px; margin-top: 1em;'></div>
+                        <div id='map' style='width: auto; height: 200px; margin-top: 1em;'></div>
                         <h5 class="card-title mt-3">
                             <%= haunting.title %>
                         </h5>
