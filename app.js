@@ -40,7 +40,7 @@ app.use(cookieParser(process.env.COOKIE_PARSER_KEY)); // cookie parsing allows a
 // ********* MONGOOSE CONNECTION (uri:string, options:object) ***********
 
 const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yikes';
-
+// process.env.DB_URL ||
 mongoose.connect(dbUrl, {
     useNewUrlParser: true,
     useCreateIndex: true,
