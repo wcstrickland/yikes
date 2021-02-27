@@ -10,7 +10,7 @@ const Joi = require('joi');
 module.exports.hauntingSchema = Joi.object({
     haunting: Joi.object({
         title: Joi.string().required(),
-        price: Joi.number().optional(),
+        price: Joi.optional(),
         location: Joi.string().required(),
         description: Joi.string().required()
     }).required()
