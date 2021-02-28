@@ -40,7 +40,7 @@ const HauntingSchema = new Schema({
 }, { toJSON: { virtuals: true } });
 
 HauntingSchema.virtual('properties.popUpMarkup').get(function() {
-    return `<b><a href="/hauntings/${this._id}">${this.title}</a></b>`;
+    return `<b><a class="link-primary" href="/hauntings/${this._id}">${this.title}</a></b>`;
 });
 
 /**
