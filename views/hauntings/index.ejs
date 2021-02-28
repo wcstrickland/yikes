@@ -4,7 +4,7 @@
     <% for(let haunting of hauntings){ %>
         <div class="card border-secondary mb-4">
             <div class="row">
-                <% if haunting.images.length>0 {%>
+                <% if (haunting.images.length>0) {%>
                     <div class="col-md-4">
                         <img src="<%= haunting.images[0].url %>" alt="" class="img-fluid">
                     </div>
