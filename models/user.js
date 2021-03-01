@@ -7,6 +7,9 @@ const UserSchema = new Schema({
         type: String,
         required: true,
         unique: true // note this is not validation(does not force uniqueness) it just indicates for indexing
+    },
+    isAdmin: {
+        type: Boolean
     }
 });
 
