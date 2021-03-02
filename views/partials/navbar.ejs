@@ -16,7 +16,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/hauntings/new">New Haunting</a>
                 </li>
-
+                <% if(currentUser.isAdmin) {%>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/hauntings/admin">Admin</a>
+                    </li>
+                    <% } %>
 
             </ul>
             <div class="navbar-nav ms-auto">
