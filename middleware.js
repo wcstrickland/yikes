@@ -36,7 +36,7 @@ module.exports.isReviewAuthor = async(req, res, next) => {
 };
 
 module.exports.isAdmin = async(req, res, next) => {
-    if (!currentUser.isAdmin) {
+    if (!res.locals.currentUser.isAdmin) {
         req.flash('error', 'You do not have admin privlidges');
         return;
     }

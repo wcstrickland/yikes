@@ -9,6 +9,11 @@ module.exports.index = async(req, res, next) => {
     res.render('hauntings/index', { hauntings });
 };
 
+module.exports.reportedIndex = async(req, res, next) => {
+    const hauntings = await Haunting.find({});
+    res.render('hauntings/reportedIndex', { hauntings });
+};
+
 module.exports.newForm = (req, res, next) => {
     res.render('hauntings/new');
 };
@@ -45,6 +50,22 @@ module.exports.showHaunting = async(req, res, next) => {
     res.render('hauntings/show', { haunting });
 };
 
+module.exports.showReportedHaunting = async(req, res, next) => {
+    const haunting = await Haunting.findById(req.params.id)
+        .populate({
+            path: 'reviews',
+            populate: {
+                path: 'author'
+            }
+        })
+        .populate('author');
+    if (!haunting) {
+        req.flash('error', 'Haunting not found. 🙃');
+        return res.redirect('/hauntings');
+    }
+    res.render('hauntings/reportedShow', { haunting });
+};
+
 module.exports.editForm = async(req, res, next) => {
     const haunting = await Haunting.findById(req.params.id);
     if (!haunting) {
@@ -74,7 +95,6 @@ module.exports.reportForm = async(req, res, next) => {
 
 module.exports.reportHaunting = async(req, res, next) => {
     const { id } = req.params;
-    console.log(id);
     const haunting = await Haunting.findById(id);
     if (!haunting) {
         req.flash('error', 'Haunting not found. 🙃');
@@ -86,6 +106,21 @@ module.exports.reportHaunting = async(req, res, next) => {
     await haunting.save();
     req.flash('success', 'Haunting reported');
     res.redirect(`/hauntings/${haunting._id}`);
+};
+
+module.exports.clearReports = async(req, res, next) => {
+    const { id } = req.params;
+    const haunting = await Haunting.findById(id);
+    if (!haunting) {
+        req.flash('error', 'Haunting not found. 🙃');
+        return res.redirect('/hauntings');
+    }
+    haunting.reports.numReports = 0;
+    haunting.reports.reporters = [];
+    haunting.reports.details = [];
+    await haunting.save();
+    req.flash('success', 'Reports Cleared');
+    res.redirect(`/hauntings/admin/${haunting._id}`);
 };
 
 module.exports.editHaunting = async(req, res, next) => {

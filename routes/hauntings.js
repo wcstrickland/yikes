@@ -11,7 +11,7 @@
 const express = require('express');
 const wrapAsync = require('../utilities/wrapAsync'); // try/catch wrapper for async functions calling next on errors
 const hauntings = require('../controllers/hauntings');
-const { isLoggedIn, isAuthor, validateHaunting } = require('../middleware');
+const { isLoggedIn, isAuthor, validateHaunting, isAdmin } = require('../middleware');
 const router = express.Router({ mergeParams: true }); // create router object
 const multer = require('multer');
 const { storage } = require('../cloudinary');
@@ -26,6 +26,11 @@ router
 
 // NEW Haunting FORM
 router.get('/new', isLoggedIn, hauntings.newForm);
+
+// reported listings (admin use) must stay above :id routes or admin is misread as an id
+router.get('/admin', isLoggedIn, isAdmin, wrapAsync(hauntings.reportedIndex));
+router.get('/admin/:id', isLoggedIn, isAdmin, wrapAsync(hauntings.showReportedHaunting));
+router.patch('/admin/:id', isLoggedIn, isAdmin, wrapAsync(hauntings.clearReports));
 
 router
     .route('/:id')
