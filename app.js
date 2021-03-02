@@ -92,6 +92,7 @@ passport.deserializeUser(User.deserializeUser()); // method added by plugin
 // LOCALS/flash middleware
 app.use((req, res, next) => {
     res.locals.currentUser = req.user;
+    res.locals.currentUser.isAdmin = req.user;
     res.locals.reportThreshold = 2;
     res.locals.success = req.flash('success'); // attatches flash messages to all responses
     res.locals.error = req.flash('error');
