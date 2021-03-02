@@ -141,10 +141,10 @@
                         </form>
                     </div>
                     <% } %>
-                        <div class="card-footer text-muted text-center">
+                        <div class="card-footer text-muted d-flex justify-content-center">
                             <small> <a class="link-secondary" href="/hauntings">back to all hauntings</a></small>
                             <%if(!haunting.reports.reporters.includes(currentUser._id)) {%>
-                                <small> <a class="link-danger" href="/hauntings/<%= haunting.id %>/report">report</a></small>
+                                <small> <a class="link-danger m-5" href="/hauntings/<%= haunting.id %>/report">report</a></small>
                                 <%} %>
                         </div>
             </div>

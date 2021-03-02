@@ -35,10 +35,30 @@ module.exports.isReviewAuthor = async(req, res, next) => {
     next();
 };
 
+module.exports.hasReported = async(req, res, next) => {
+    const { id } = req.params;
+    const haunting = await Haunting.findById(id);
+    if (haunting.reports.reporters.includes(res.locals.currentUser._id)) {
+        req.flash('error', 'You have already reported this listing.');
+        return res.redirect(`/hauntings/${id}`);
+    }
+    next();
+};
+
+module.exports.beenRemoved = async(req, res, next) => {
+    const { id } = req.params;
+    const haunting = await Haunting.findById(id);
+    if (haunting.reports.numRemports >= 2) {
+        req.flash('error', 'Haunting not found. 🙃');
+        return res.redirect('/hauntings');
+    }
+    next();
+};
+
 module.exports.isAdmin = async(req, res, next) => {
-    if (!res.locals.currentUser.isAdmin) {
+    if (res.locals.currentUser.isAdmin === false || res.locals.currentUser.isAdmin === undefined) {
         req.flash('error', 'You do not have admin privlidges');
-        return;
+        return res.redirect(`/hauntings`);
     }
     next();
 };

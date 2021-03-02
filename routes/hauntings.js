@@ -11,7 +11,7 @@
 const express = require('express');
 const wrapAsync = require('../utilities/wrapAsync'); // try/catch wrapper for async functions calling next on errors
 const hauntings = require('../controllers/hauntings');
-const { isLoggedIn, isAuthor, validateHaunting, isAdmin } = require('../middleware');
+const { isLoggedIn, isAuthor, validateHaunting, isAdmin, hasReported, beenRemoved } = require('../middleware');
 const router = express.Router({ mergeParams: true }); // create router object
 const multer = require('multer');
 const { storage } = require('../cloudinary');
@@ -35,7 +35,7 @@ router.patch('/admin/:id', isLoggedIn, isAdmin, wrapAsync(hauntings.clearReports
 router
     .route('/:id')
     // SHOW Haunting
-    .get(wrapAsync(hauntings.showHaunting))
+    .get(beenRemoved, wrapAsync(hauntings.showHaunting))
     // UPDATE Haunting PUT
     .put(isLoggedIn, isAuthor, upload.array('image'), validateHaunting, wrapAsync(hauntings.editHaunting))
     // APPEND PHOTOS
@@ -47,9 +47,11 @@ router
 router.get('/:id/edit', isLoggedIn, isAuthor, wrapAsync(hauntings.editForm));
 // APPEND PHOTOS FORM
 router.get('/:id/append', isLoggedIn, isAuthor, wrapAsync(hauntings.appendForm));
+
+// REPORT ROUTES
 // Report Form
-router.get('/:id/report', isLoggedIn, wrapAsync(hauntings.reportForm));
+router.get('/:id/report', hasReported, isLoggedIn, wrapAsync(hauntings.reportForm));
 // report
-router.put('/:id/report', isLoggedIn, wrapAsync(hauntings.reportHaunting));
+router.put('/:id/report', hasReported, isLoggedIn, wrapAsync(hauntings.reportHaunting));
 
 module.exports = router;

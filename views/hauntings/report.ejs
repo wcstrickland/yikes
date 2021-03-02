@@ -2,18 +2,20 @@
 
     <div class="container d-flex justify-content-center align-items-center mt-5">
         <div class="row mb-5">
-            <div class="col-md-6 offset-md-3 col-xl-4 offset-xl-4">
-                <div class="card shadow">
-                    <img src="https://images.unsplash.com/photo-1509411273045-2920cee823be?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1225&q=80" alt="" class="card-img-top" />
+            <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3 col-sm-10 offset-sm-1">
+                <div class="card shadow text-center">
+                    <img src="https://images.unsplash.com/photo-1517488948216-e473cee81e23?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=765&q=80" alt="" class="card-img-top" />
                     <div class="card-body">
-                        <h5 class="card-title">Report</h5>
                         <div class="mb-3">
-                            <p>This is the reporting text</p>
+                            <p>Here at Yikes! we strive to strike a balance between supporting everyone posting their favorite locations and providing quality content.<br> That being said, if a post is clearly a joke and underminning the quality of the site
+                                we encourage users to report it.<br> We also will not tolerate any violent or hateful speech and any instance of such should be immediately reported.<br> While we encourage our users to be part of a community commited to
+                                only providing quality content, we also do not wish to see the reporting system abused. <br>Frequent, deliberate abuse of the reporting system may lead to eventual suspension of your account.
+                            </p>
                         </div>
                         <form action="/hauntings/<%=haunting.id%>/report?_method=PUT" method="POST" class="validated-form" novalidate>
                             <div class="mb-3">
-                                <label class="form-label" for="report">Reason</label>
-                                <input class="form-control" type="text" id="report" name="account" autofocus required>
+
+                                <textarea class="form-control" type="text" id="report" name="account" placeholder="how does this content violate site rules" autofocus required></textarea>
                                 <div class="valid-feedback">
                                     Looks good!
                                 </div>
