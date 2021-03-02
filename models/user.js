@@ -9,7 +9,8 @@ const UserSchema = new Schema({
         unique: true // note this is not validation(does not force uniqueness) it just indicates for indexing
     },
     isAdmin: {
-        type: Boolean
+        type: Boolean,
+        default: false
     }
 });
 

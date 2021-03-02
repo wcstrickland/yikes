@@ -51,7 +51,7 @@ const seedDB = async() => {
             description: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Odio iste dolorum temporibus ab tempora voluptas dolores cupiditate veniam voluptates ex nostrum quod, nam rem deleniti! Eaque alias vitae temporibus blanditiis.',
             price
         });
-        await camp.save();
+        await haunt.save();
     }
 };
 

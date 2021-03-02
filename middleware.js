@@ -35,6 +35,14 @@ module.exports.isReviewAuthor = async(req, res, next) => {
     next();
 };
 
+module.exports.isAdmin = async(req, res, next) => {
+    if (!currentUser.isAdmin) {
+        req.flash('error', 'You do not have admin privlidges');
+        return;
+    }
+    next();
+};
+
 // JOI VALIDATION MIDDLEWARE
 module.exports.validateHaunting = (req, res, next) => {
     const { error } = hauntingSchema.validate(req.body);

@@ -5,6 +5,7 @@
  * mongoose.model takes the string name of the model and the schema you define as arguments
  */
 
+const { object } = require('joi');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Review = require('./review');
@@ -36,7 +37,24 @@ const HauntingSchema = new Schema({
     reviews: [{
         type: Schema.Types.ObjectId,
         ref: 'Review'
-    }]
+    }],
+    reports: {
+        numReports: {
+            type: Number,
+            default: 0
+        },
+        reporters: {
+            type: [String]
+        },
+        details: [{
+            author: {
+                type: String
+            },
+            account: {
+                type: String
+            }
+        }]
+    }
 }, { toJSON: { virtuals: true } });
 
 HauntingSchema.virtual('properties.popUpMarkup').get(function() {

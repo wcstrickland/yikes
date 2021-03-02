@@ -63,6 +63,31 @@ module.exports.appendForm = async(req, res, next) => {
     res.render('hauntings/append', { haunting });
 };
 
+module.exports.reportForm = async(req, res, next) => {
+    const haunting = await Haunting.findById(req.params.id);
+    if (!haunting) {
+        req.flash('error', 'Haunting not found. 🙃');
+        return res.redirect('/hauntings');
+    }
+    res.render('hauntings/report', { haunting });
+};
+
+module.exports.reportHaunting = async(req, res, next) => {
+    const { id } = req.params;
+    console.log(id);
+    const haunting = await Haunting.findById(id);
+    if (!haunting) {
+        req.flash('error', 'Haunting not found. 🙃');
+        return res.redirect('/hauntings');
+    }
+    haunting.reports.numReports += 1;
+    haunting.reports.reporters.push(res.locals.currentUser._id);
+    haunting.reports.details.push({ author: res.locals.currentUser.username, account: req.body.account });
+    await haunting.save();
+    req.flash('success', 'Haunting reported');
+    res.redirect(`/hauntings/${haunting._id}`);
+};
+
 module.exports.editHaunting = async(req, res, next) => {
     const haunting = await Haunting.findByIdAndUpdate(req.params.id, {...req.body.haunting });
     for (let img of haunting.images) {

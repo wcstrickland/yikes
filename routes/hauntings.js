@@ -42,5 +42,9 @@ router
 router.get('/:id/edit', isLoggedIn, isAuthor, wrapAsync(hauntings.editForm));
 // APPEND PHOTOS FORM
 router.get('/:id/append', isLoggedIn, isAuthor, wrapAsync(hauntings.appendForm));
+// Report Form
+router.get('/:id/report', isLoggedIn, wrapAsync(hauntings.reportForm));
+// report
+router.put('/:id/report', isLoggedIn, wrapAsync(hauntings.reportHaunting));
 
 module.exports = router;
