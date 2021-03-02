@@ -2,7 +2,7 @@
     <div id="map" style="width: 100%; height: 60vh"></div>
     <h1>All Hauntings</h1>
     <% for(let haunting of hauntings){ %>
-        <%if(haunting.reports.numReports<2) {%>
+        <%if(haunting.reports.numReports< reportThreshold) {%>
             <div class="card border-secondary mb-4">
                 <div class="row">
                     <% if (haunting.images.length>0) {%>
@@ -34,7 +34,7 @@
             </div>
             <%} %>
                 <% } %>
-
+                    <a id="back-to-top" href="#" style="position:fixed;bottom:25px;right:25px;" class="btn btn-secondary btn-lg" role="button"><i class="fa fa-chevron-up"></i></a>
                     <script>
                         const mapToken = '<%-process.env.MAPBOX_TOKEN%>';
                         const hauntings = {
